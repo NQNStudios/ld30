@@ -1,0 +1,7 @@
+*.swp
+
+bin/*
+
+timelapse/*.jpg
+timelapse/files.txt
+timelapse/screenlapse.avi
