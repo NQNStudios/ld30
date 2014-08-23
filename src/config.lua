@@ -7,4 +7,8 @@ config.tileHeight = 8
 config.mapWidth = 20
 config.mapHeight = 15
 
+config.normalSpeed = 60
+
+config.debug = false
+
 return config

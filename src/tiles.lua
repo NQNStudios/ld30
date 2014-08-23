@@ -1,9 +1,10 @@
 tile = require "tile"
+color = require "color"
 
 local tiles = { }
 
-tiles["#"] = tile(0, false)
-tiles["3"] = tile(1, false)
-tiles[" "] = tile(7, true)
+tiles["!"] = tile(8, color.blue, false)
+tiles["?"] = tile(9, color.orange, false)
+tiles[" "] = tile(7, color.none, true)
 
 return tiles

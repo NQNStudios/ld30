@@ -1,8 +1,6 @@
 tiles = require("tiles")
 
 local function map(spriteSheet, width, height, tileWidth, tileHeight, file)
-    -- TODO use file to load a map
-    
     local instance = { }
 
     instance.spriteSheet = spriteSheet
