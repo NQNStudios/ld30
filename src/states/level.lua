@@ -1,7 +1,7 @@
-map = require "map"
-config = require "config"
-block = require "block"
-color = require "color"
+local map = require "map"
+local config = require "config"
+local block = require "block"
+local color = require "color"
 
 local function levelstate(game, level)
     local instance = { }
@@ -12,8 +12,13 @@ local function levelstate(game, level)
 
     instance.blocks = { }
 
-    instance.blocks[color.blue] = block(game.spriteSheet, color.blue, 0, 0, config.normalSpeed)
-    instance.blocks[color.orange] = block(game.spriteSheet, color.orange, 50, 0, config.normalSpeed)
+    local blueX = instance.map.points[color.blue].x1 * config.tileWidth
+    local blueY = instance.map.points[color.blue].y1 * config.tileHeight
+    instance.blocks[color.blue] = block(game.spriteSheet, instance.map, color.blue, blueX, blueY, config.normalSpeed)
+
+    local orangeX = instance.map.points[color.orange].x1 * config.tileWidth
+    local orangeY = instance.map.points[color.orange].y1 * config.tileHeight
+    instance.blocks[color.orange] = block(game.spriteSheet, instance.map, color.orange, orangeX, orangeY, config.normalSpeed)
 
     -- Link the two blocks together
     instance.blocks[color.blue].otherBlock = instance.blocks[color.orange]

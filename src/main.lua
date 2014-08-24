@@ -1,8 +1,8 @@
-map = require "map"
-spritesheet = require "spritesheet"
-config = require "config"
-game = require "game"
-menu = require "states/menu"
+local map = require "map"
+local spritesheet = require "spritesheet"
+local config = require "config"
+local game = require "game"
+local menu = require "states/menu"
 
 function love.load()
     love.keyboard.setKeyRepeat(false)

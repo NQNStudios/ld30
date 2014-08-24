@@ -1,4 +1,5 @@
-level = require "states/level"
+local level = require "states/level"
+
 local function menu()
     local instance = { }
 

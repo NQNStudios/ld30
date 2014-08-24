@@ -2,6 +2,7 @@ Mechanic ideas:
 - variable speeds
 - cross over worlds (changing color)
 - single-control gate
+- restart button
 
 Screen size:
 - tile = 8 x 8
