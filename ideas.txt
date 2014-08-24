@@ -1,10 +1,15 @@
-Mechanic ideas:
+TODO
+- fix poor movement synchronization
+- add tutorial (movement, restart, quit)
+- design levels
+- make an ending screen (as last level)
+
+STRETCH
+- sounds
+- prettier
+
+(Really stretch) Mechanic ideas:
 - variable speeds
 - cross over worlds (changing color)
 - single-control gate
 - restart button
-
-Screen size:
-- tile = 8 x 8
-- scale = 4
-- map = 20 x 15

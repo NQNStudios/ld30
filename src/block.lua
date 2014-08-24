@@ -34,7 +34,7 @@ local function block(spriteSheet, map, blockColor, x, y, speed)
         instance.keys.rightKey = "right"
     end
 
-    function instance:update(dt)
+    function instance:update(dt, level)
         self.active = false
 
         for key, value in pairs(self.keys) do
@@ -46,94 +46,66 @@ local function block(spriteSheet, map, blockColor, x, y, speed)
         if self.otherBlock then
             if self.otherBlock.active then
 
-                function checkHorizontal(direction)
-                    local tileX = self.x / config.tileWidth
-                    tileX = tileX + direction
+                local dx = 0
+                local dy = 0
 
-                    local tileY = self.y / config.tileHeight
-
-                    tileX = math.floor(tileX + 0.5)
-
-                    local upperY = math.floor(tileY)
-                    local lowerY = math.ceil(tileY)
-
-                    local upperTile = self.map.tiles[tileX][upperY]
-                    local lowerTile = self.map.tiles[tileX][lowerY]
-
-                    if upperTile.solid then
-                        tx, ty, tw, th = self.map:getPixelBounds(tileX, upperY)
-                        bx, by, bw, bh = self:getPixelBounds()
-
-                        if rectangle.intersects(tx, ty, tw, th, bx, by, bw, bh) then
-                            self.x = (tileX - direction) * config.tileWidth
-                            self.active = false
-                        end
-                    end
-
-                    if lowerTile.solid then
-                        tx, ty, tw, th = self.map:getPixelBounds(tileX, lowerY)
-                        bx, by, bw, bh = self:getPixelBounds()
-
-                        if rectangle.intersects(tx, ty, tw, th, bx, by, bw, bh) then
-                            self.x = (tileX - direction) * config.tileWidth
-                            self.active = false
-                        end
-                    end
-                end
-
-                function checkVertical(direction)
-                    local tileX = self.x / config.tileWidth
-
-                    local tileY = self.y / config.tileHeight
-                    tileY = tileY + direction
-
-                    tileY = math.floor(tileY + 0.5)
-
-                    local leftX = math.floor(tileX)
-                    local rightX = math.ceil(tileX)
-
-                    local leftTile = self.map.tiles[leftX][tileY]
-                    local rightTile = self.map.tiles[rightX][tileY]
-
-                    if leftTile.solid then
-                        -- check for collision with the left tile
-                        tx, ty, tw, th = self.map:getPixelBounds(leftX, tileY)
-                        bx, by, bw, bh = self:getPixelBounds()
-
-                        if (rectangle.intersects(tx, ty, tw, th, bx, by, bw, bh)) then
-                            self.y = (tileY - direction) * config.tileHeight
-                            self.active = false
-                        end
-                    end
-
-                    if rightTile.solid then
-                        tx, ty, tw, th = self.map:getPixelBounds(leftX, tileY)
-                        bx, by, bw, bh = self:getPixelBounds()
-
-                        if (rectangle.intersects(tx, ty, tw, th, bx, by, bw, bh)) then
-                            self.y = (tileY - direction) * config.tileHeight
-                            self.active = false
-                        end
-                    end
-                end
-
-                -- TODO actually collide with walls and change color when crossing worlds
                 if love.keyboard.isDown(self.keys.leftKey) then
-                    self.x = self.x - self.speed * dt
-
-                    checkHorizontal(-1)
+                    dx = -self.speed * dt
                 elseif love.keyboard.isDown(self.keys.rightKey) then
-                    self.x = self.x + self.speed * dt
-
-                    checkHorizontal(1)
+                    dx = self.speed * dt
                 elseif love.keyboard.isDown(self.keys.upKey) then
-                    self.y = self.y - self.speed * dt
-
-                    checkVertical(-1)
+                    dy = -self.speed * dt
                 elseif love.keyboard.isDown(self.keys.downKey) then
-                    self.y = self.y + self.speed * dt
+                    dy = self.speed * dt
+                end
 
-                    checkVertical(1)
+                self.x = self.x + dx 
+                self.y = self.y + dy
+
+                -- collide with walls
+                bx, by, bw, bh = self:getPixelBounds()
+                bright = bx + bw
+                bbottom = by + bh
+
+                for c = 0, level.wallCount - 1 do
+                    local wx = level.walls[c].x
+                    local wy = level.walls[c].y
+                    local ww = level.walls[c].w
+                    local wh = level.walls[c].h
+                    
+                    if rectangle.intersects(bx, by, bw, bh, wx, wy, ww, wh) then
+                        wright = wx + ww
+                        wbottom = wy + wh
+
+                        if dx < 0 then
+                            -- check to the left
+                            if bx < wright then
+                                self.x = wright
+                                self.active = false
+
+                            end
+                        elseif dx > 0 then
+                            -- check to the right
+                            if bright > wx then
+                                self.x = wx - ww
+                                self.active = false
+                            end
+                        end
+
+                        if dy < 0 then
+                            -- check up
+                            if by < wbottom then
+                                self.y = wbottom
+                                self.active = false
+                            end
+                        elseif dy > 0 then
+                            -- check down
+                            if bbottom > wy then
+                                self.y = wy - wh
+                                self.active = false
+                            end
+                        end
+                    end
                 end
 
             end
@@ -145,7 +117,10 @@ local function block(spriteSheet, map, blockColor, x, y, speed)
     end
 
     function instance:getPixelBounds()
-        return self.x, self.x, config.tileWidth, config.tileHeight
+        local padX = config.blockPadding.x
+        local padY = config.blockPadding.y
+
+        return self.x - padX, self.y - padY, config.tileWidth - 2 * padX, config.tileHeight - 2 * padY
     end
 
     return instance

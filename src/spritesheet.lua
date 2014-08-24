@@ -29,7 +29,7 @@ local function spritesheet(texture, tileWidth, tileHeight)
         end
 
         local x = math.floor(index % self.width)
-        local y = math.floor(index / self.height)
+        local y = math.floor(index / self.width)
 
         local quad = self:getQuadAt(x, y)
 
