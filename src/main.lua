@@ -5,15 +5,6 @@ local game = require "game"
 local levelstate = require "states/level"
 
 function love.load()
-    local tiles = require "tiles"
-    local idx = tiles["e"].index
-    local x = idx % 8
-    local y = math.floor(idx / 8)
-
-    print(idx)
-    print(x)
-    print(y)
-
     love.keyboard.setKeyRepeat(false)
 
     love.graphics.setDefaultFilter("nearest")

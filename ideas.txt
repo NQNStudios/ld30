@@ -1,6 +1,5 @@
 TODO
 - fix poor movement synchronization
-- add tutorial (movement, restart, quit)
 - design levels
 - make an ending screen (as last level)
 

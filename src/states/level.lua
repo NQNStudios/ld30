@@ -61,8 +61,60 @@ local function levelstate(game, level)
     instance.blocks[color.orange].otherBlock = instance.blocks[color.blue]
 
     function instance:update(dt)
-        self.blocks[color.blue]:update(dt, self)
-        self.blocks[color.orange]:update(dt, self)
+        -- short circuit the more expensive movement handling if either block has no movement inputs
+        self.blocks[color.blue]:update(dt)
+        self.blocks[color.orange]:update(dt)
+
+        if self.blocks[color.blue].active and self.blocks[color.orange].active then
+            -- move both at once in equal amounts
+            local dx1, dy1 = self.blocks[color.blue]:checkMove(dt, self)
+            local dx2, dy2 = self.blocks[color.orange]:checkMove(dt, self)
+
+            local d1 = math.max(math.abs(dx1), math.abs(dy1))
+            local d2 = math.max(math.abs(dx2), math.abs(dy2))
+
+            print("d1: " .. d1)
+            print("d2: " .. d2)
+
+            local d = math.min(d1, d2)
+
+            -- if either distance is larger than the other, normalize it and scale to match so movement is synchronized
+            if d1 > d then
+                if d1 > 0 then
+                    print("first value: " .. dx1)
+                    dx1 = dx1 / d1
+                    dx1 = dx1 * d
+                    print("second value: " .. dx1)
+                end
+
+                if d1 > 0 then
+                    print("first value: " .. dx1)
+                    dy1 = dy1 / d1
+                    dy1 = dy1 * d
+                    print("second value: " .. dx1)
+                end
+            end
+
+            if d2 > d then
+                print("here")
+                if d2 > 0 then
+                    print("first value: " .. dx1)
+                    dx2 = dx2 / d2
+                    dx2 = dx2 * d
+                    print("second value: " .. dx1)
+                end
+
+                if d2 > 0 then
+                    print("first value: " .. dx1)
+                    dy2 = dy2 / d2
+                    dy2 = dy2 * d
+                    print("second value: " .. dx1)
+                end
+            end
+
+            self.blocks[color.blue]:move(dx1, dy1, self)
+            self.blocks[color.orange]:move(dx2, dy2, self)
+        end
 
         -- check for victory
         bx, by, bw, bh = self.blocks[color.blue]:getPixelBounds()

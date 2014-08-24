@@ -34,7 +34,8 @@ local function block(spriteSheet, map, blockColor, x, y, speed)
         instance.keys.rightKey = "right"
     end
 
-    function instance:update(dt, level)
+    -- this function isn't strictly necessary but avoids unnecessary processing every frame (if the block isn't moving)
+    function instance:update(dt)
         self.active = false
 
         for key, value in pairs(self.keys) do
@@ -42,74 +43,77 @@ local function block(spriteSheet, map, blockColor, x, y, speed)
                 self.active = true
             end
         end
+    end
 
-        if self.otherBlock then
-            if self.otherBlock.active then
+    function instance:checkMove(dt, level)
+        local dx = 0
+        local dy = 0
 
-                local dx = 0
-                local dy = 0
+        if love.keyboard.isDown(self.keys.leftKey) then
+            dx = -self.speed * dt
+        elseif love.keyboard.isDown(self.keys.rightKey) then
+            dx = self.speed * dt
+        elseif love.keyboard.isDown(self.keys.upKey) then
+            dy = -self.speed * dt
+        elseif love.keyboard.isDown(self.keys.downKey) then
+            dy = self.speed * dt
+        end
 
-                if love.keyboard.isDown(self.keys.leftKey) then
-                    dx = -self.speed * dt
-                elseif love.keyboard.isDown(self.keys.rightKey) then
-                    dx = self.speed * dt
-                elseif love.keyboard.isDown(self.keys.upKey) then
-                    dy = -self.speed * dt
-                elseif love.keyboard.isDown(self.keys.downKey) then
-                    dy = self.speed * dt
-                end
+        x, y, w, h = self:getPixelBounds()
+        x = x + dx
+        y = y + dy
 
-                self.x = self.x + dx 
-                self.y = self.y + dy
+        right = x + w
+        bottom = y + h
 
-                -- collide with walls
-                bx, by, bw, bh = self:getPixelBounds()
-                bright = bx + bw
-                bbottom = by + bh
+        -- collide with walls
+        for c = 0, level.wallCount - 1 do
+            local wx = level.walls[c].x
+            local wy = level.walls[c].y
+            local ww = level.walls[c].w
+            local wh = level.walls[c].h
+            
+            if rectangle.intersects(x, y, w, h, wx, wy, ww, wh) then
+                wright = wx + ww
+                wbottom = wy + wh
 
-                for c = 0, level.wallCount - 1 do
-                    local wx = level.walls[c].x
-                    local wy = level.walls[c].y
-                    local ww = level.walls[c].w
-                    local wh = level.walls[c].h
-                    
-                    if rectangle.intersects(bx, by, bw, bh, wx, wy, ww, wh) then
-                        wright = wx + ww
-                        wbottom = wy + wh
-
-                        if dx < 0 then
-                            -- check to the left
-                            if bx < wright then
-                                self.x = wright
-                                self.active = false
-
-                            end
-                        elseif dx > 0 then
-                            -- check to the right
-                            if bright > wx then
-                                self.x = wx - ww
-                                self.active = false
-                            end
-                        end
-
-                        if dy < 0 then
-                            -- check up
-                            if by < wbottom then
-                                self.y = wbottom
-                                self.active = false
-                            end
-                        elseif dy > 0 then
-                            -- check down
-                            if bbottom > wy then
-                                self.y = wy - wh
-                                self.active = false
-                            end
-                        end
+                if dx < 0 then
+                    -- check to the left
+                    if x < wright then
+                        x = wright
+                    end
+                elseif dx > 0 then
+                    -- check to the right
+                    if right > wx then
+                        x = wx - ww
                     end
                 end
 
+                if dy < 0 then
+                    -- check up
+                    if y < wbottom then
+                        y = wbottom
+                    end
+                elseif dy > 0 then
+                    -- check down
+                    if bottom > wy then
+                        y = wy - wh
+                    end
+                end
+
+                break -- don't keep checking collisions after one has been handled already
             end
         end
+
+        dx = x - self.x
+        dy = y - self.y
+
+        return dx, dy
+    end
+
+    function instance:move(dx, dy)
+        self.x = self.x + dx 
+        self.y = self.y + dy
     end
 
     function instance:draw(spriteBatch)
