@@ -5,3 +5,4 @@ bin/*
 timelapse/*.jpg
 timelapse/files.txt
 timelapse/screenlapse.avi
+timelapse/ld30-timelapse.mp4
