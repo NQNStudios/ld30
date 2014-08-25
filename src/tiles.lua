@@ -26,6 +26,7 @@ tiles["v"] = tile(15, color.none, true) -- V wall
 
 tiles["y"] = tile(18, color.none, true) -- Y wall
 tiles["-"] = tile(19, color.none, true) -- - wall
+tiles["g"] = tile(20, color.none, true) -- G wall
 
 tiles["W"] = tile(33, color.none, true)
 tiles["A"] = tile(40, color.none, true)

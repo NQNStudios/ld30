@@ -67,6 +67,8 @@ local function block(spriteSheet, map, blockColor, x, y, speed)
         bottom = y + h
 
         -- collide with walls
+        local justBonked = false
+
         for c = 0, level.wallCount - 1 do
             local wx = level.walls[c].x
             local wy = level.walls[c].y
@@ -74,6 +76,13 @@ local function block(spriteSheet, map, blockColor, x, y, speed)
             local wh = level.walls[c].h
             
             if rectangle.intersects(x, y, w, h, wx, wy, ww, wh) then
+                if not self.bonked then
+                    level.game.sounds.bonk:play()
+                    self.bonked = true
+                end
+                
+                justBonked = true
+
                 wright = wx + ww
                 wbottom = wy + wh
 
@@ -105,11 +114,17 @@ local function block(spriteSheet, map, blockColor, x, y, speed)
             end
         end
 
+        if not justBonked then
+            self.bonked = false
+        end
+
         dx = x - self.x
         dy = y - self.y
 
         return dx, dy
     end
+
+    instance.bonked = false
 
     function instance:move(dx, dy)
         self.x = self.x + dx 

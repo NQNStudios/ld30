@@ -1,14 +1,7 @@
-TODO
-- fix poor movement synchronization
-- design levels
-- make an ending screen (as last level)
-
 STRETCH
-- sounds
-- prettier
+- music
 
 (Really stretch) Mechanic ideas:
 - variable speeds
 - cross over worlds (changing color)
 - single-control gate
-- restart button

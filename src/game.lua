@@ -3,6 +3,10 @@ local function game(spriteSheet)
 
     instance.spriteSheet = spriteSheet
 
+    instance.sounds = { }
+    instance.sounds.bonk = love.audio.newSource("data/wall.wav")
+    instance.sounds.level = love.audio.newSource("data/level.wav")
+
     function instance:setState(state)
         state.game = self
         self.state = state

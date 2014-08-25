@@ -11,6 +11,9 @@ local function levelstate(game, level)
 
     function instance:nextLevel()
         local nextState = levelstate(game, self.level + 1)
+
+        game.sounds.level:play()
+
         game:setState(nextState)
     end
 
@@ -73,42 +76,30 @@ local function levelstate(game, level)
             local d1 = math.max(math.abs(dx1), math.abs(dy1))
             local d2 = math.max(math.abs(dx2), math.abs(dy2))
 
-            print("d1: " .. d1)
-            print("d2: " .. d2)
-
             local d = math.min(d1, d2)
 
             -- if either distance is larger than the other, normalize it and scale to match so movement is synchronized
             if d1 > d then
-                if d1 > 0 then
-                    print("first value: " .. dx1)
+                if math.abs(dx1) > 0 then
                     dx1 = dx1 / d1
                     dx1 = dx1 * d
-                    print("second value: " .. dx1)
                 end
 
-                if d1 > 0 then
-                    print("first value: " .. dx1)
+                if math.abs(dy1) > 0 then
                     dy1 = dy1 / d1
                     dy1 = dy1 * d
-                    print("second value: " .. dx1)
                 end
             end
 
             if d2 > d then
-                print("here")
-                if d2 > 0 then
-                    print("first value: " .. dx1)
+                if math.abs(dx2) > 0 then
                     dx2 = dx2 / d2
                     dx2 = dx2 * d
-                    print("second value: " .. dx1)
                 end
 
-                if d2 > 0 then
-                    print("first value: " .. dx1)
+                if math.abs(dy2) > 0 then
                     dy2 = dy2 / d2
                     dy2 = dy2 * d
-                    print("second value: " .. dx1)
                 end
             end
 

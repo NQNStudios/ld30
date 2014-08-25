@@ -14,7 +14,7 @@ config.blockPadding = {
 
 config.normalSpeed = 60
 
-config.victoryForgiveness = 1
+config.victoryForgiveness = 2
 config.victoryOverlap = (config.tileWidth - config.victoryForgiveness) * (config.tileHeight - config.victoryForgiveness)
 
 config.debug = false
